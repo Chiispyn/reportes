@@ -1,27 +1,32 @@
 package com.reportes.reportes.model;
 
-import com.reportes.reportes.api.VentaAPI;
-import jakarta.persistence.*;
-import lombok.*;
-
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import java.time.LocalDate;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "reporte_venta")
 public class ReporteVenta extends Reporte {
 
-    @Transient
-    private VentaAPI ventaAPI;
-
-    private LocalDate fechaInicio;
-    private LocalDate fechaFin;
+    public ReporteVenta() {
+        this.setFechaCreacion(LocalDate.now());
+    }
 
     @Override
     public String generarReporte() {
-        return "Reporte de Ventas del " + fechaInicio + " al " + fechaFin + ":\n" +
-                ventaAPI.filtrarFecha(fechaInicio, fechaFin);
+        StringBuilder reporte = new StringBuilder();
+        reporte.append("Reporte de Ventas\n");
+        reporte.append("Fecha de Creación: ").append(this.getFechaCreacion()).append("\n");
+        return reporte.toString();
+    }
+
+    @Override
+    public String mostrarReporte() {
+        String reporteBase = super.mostrarReporte();
+        return reporteBase + "\n" + generarReporte();
     }
 }
